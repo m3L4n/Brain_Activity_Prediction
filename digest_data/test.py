@@ -37,8 +37,13 @@ def get_concatenate_edf(index_max=10):
 
 
 def filter_frequency(raw):
+
     raw.filter(8, 40, fir_design='firwin')
     raw.plot_psd()
+    plt.show()
+    fig = raw.compute_psd(tmax=np.inf, fmax=80).plot(
+        average=True, amplitude=False, picks="data", exclude="bads"
+    )
     plt.show()
 
 
@@ -51,14 +56,8 @@ def show_raw_plot(raw):
 def main():
     raw = get_concatenate_edf()
     show_raw_plot(raw)
+    filter_frequency(raw)
 
-    filt_raw = raw.copy().filter(l_freq=1.0, h_freq=None)
-
-    ica = ICA(n_components=15, max_iter="auto", random_state=97)
-    ica.fit(filt_raw)
-    ica
-    # Étape 3 : Définir un montage personnalisé (système 10-10)
-    filt_raw.plot_psd()
     plt.show()
 
 
