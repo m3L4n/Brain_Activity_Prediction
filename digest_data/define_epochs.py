@@ -34,7 +34,7 @@ def define_epochs(raw):
         preload=True,
     )
     print(f"Number of epochs: {len(epochs)}")
-    epochs_train = epochs.copy().crop(tmin=1.0, tmax=2.0)
+    epochs_train = epochs.copy()
 
     labels = epochs.events[:, -1]
 

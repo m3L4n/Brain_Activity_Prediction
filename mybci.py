@@ -7,6 +7,7 @@ from digest_data.concatenate_raw1 import concatenate_edf
 from digest_data.detect_marks_bad_channels import detect_marks_bad_channels
 from plot_data.plot_data import plot_data
 from predict_data.predict_data import predict_data
+from test_all_data.test_all_data import test_all_data
 from train_data.train_data import train_data
 
 
@@ -52,11 +53,12 @@ def set_up_data(subject_index, runs_index, index_mode):
 
 
 def main(argv):
-    list_function_mode = [plot_data, train_data, predict_data]
     try:
         if (len(argv) == 1):
-            print("Not ready for the test validation")
+            test_all_data()
+            return
         elif len(argv) == 4:
+            list_function_mode = [plot_data, train_data, predict_data]
             subject_index, runs_index = check_argument(argv[1], argv[2])
             index_func_mode = get_mode(argv[3])
             assert not index_func_mode == -1, "Error the mode need to be  predict| train | plot"

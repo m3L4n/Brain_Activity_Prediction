@@ -29,8 +29,8 @@ def concatenate_edf(subject_number: int, runs_experiment: list):
             subject, runs, data_dir)
 
         raws = [read_raw_edf(f, preload=True) for f in files]
-        # Combine all loaded runs
         raw_obj = concatenate_raws(raws)
+        eegbci.standardize(raw_obj)  # Important because it set channel names
         return raw_obj
     except Exception as e:
         print(e)
