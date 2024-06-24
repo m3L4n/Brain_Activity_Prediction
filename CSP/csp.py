@@ -1,4 +1,6 @@
 # https://en.wikipedia.org/wiki/Common_spatial_pattern
+#https://github.com/mne-tools/mne-python/blob/main/mne/decoding/csp.py#L546
+
 import numpy as np
 from scipy.linalg import eigh, inv
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -10,113 +12,51 @@ class CSP(TransformerMixin, BaseEstimator):
         self.n_components = n_components
         self.filters_ = None
         
-    def _cov_estimator(self, x_class, *, cov_kind, log_rank):
-        _, n_channels, _ = x_class.shape
-
-        x_class = x_class.transpose(1, 0, 2).reshape(n_channels, -1)
-        cov = self._regularized_covariance(
-            x_class,
-            reg=None,
-            method_params=self.cov_method_params,
-            rank=self._rank,
-            info=self._info,
-            cov_kind=cov_kind,
-            log_rank=log_rank,
-            log_ch_type="data",
-        )
-        weight = x_class.shape[0]
-
-        return cov, weight
+    def _concat_epoch(self, X):
+        _, n_channels, _ = X.shape
+        x_class = X.transpose(1, 0, 2).reshape(n_channels, -1)
+        return x_class
         
-    def _compute_covariance_matrices(self, X, y):
-        # covs = []
-        # sample_weights = []
-        # for ci, this_class in enumerate(self._classes):
-        #     cov, weight = self.cov_estimator(
-        #         X[y == this_class],
-        #         cov_kind=f"class={this_class}",
-        #         log_rank=ci == 0,
-        #     )
-
-        #     if self.norm_trace:
-        #         cov /= np.trace(cov)
-
-        #     covs.append(cov)
-        #     sample_weights.append(weight)
-
-        # return np.stack(covs), np.array(sample_weights)
-        pass
+        
+    def _compute_covariance_matrices(self, X):
+        """
+        """
+        x_concat = self._concat_epoch(X)
+        return np.cov(x_concat)
+        
     def fit(self, x_array, epoch_array):
         self._classes = np.unique(epoch_array)
-        # print("X array", x_array, "EPOCH\n", epoch_array)
-
-
-        # covs, sample_weights = self._compute_covariance_matrices(X, y)
-        # eigen_vectors, eigen_values = self._decompose_covs(covs, sample_weights)
-        # ix = self._order_components(
-        #     covs, sample_weights, eigen_vectors, eigen_values, self.component_order
-        # )
-
-        # eigen_vectors = eigen_vectors[:, ix]
-
-        # self.filters_ = eigen_vectors.T
-
-
-
-
-
-
-
-
-
-
 
         # define two distinct data class
         data_class_1, data_class_2 = self.define_class_data(
             x_array, epoch_array)
-        n_epochs = data_class_1.shape[0]
-        n_channels = data_class_1.shape[1]
-        n_times = data_class_1.shape[2]
-        
-        cov_matrices = np.zeros((n_channels, n_channels, n_epochs))
-        for i in range(n_epochs): 
-            X = data_class_1[i]  # Forme (n_channels, n_times)
-            R = (X @ X.T) / n_times  # Calculer la matrice de covariance selon la formule donnée
-            cov_matrices[:, :, i] = R
-        cov_1 = np.mean(cov_matrices, axis=2)
-        
-        n_epochs = data_class_2.shape[0]
-        n_channels = data_class_2.shape[1]
-        n_times = data_class_2.shape[2]
-        cov_matrices = np.zeros((n_channels, n_channels, n_epochs))
-        for i in range(n_epochs): 
-            X = data_class_2[i]  # Forme (n_channels, n_times)
-            R = (X @ X.T) / n_times  # Calculer la matrice de covariance selon la formule donnée
-            cov_matrices[:, :, i] = R
-        cov_2 = np.mean(cov_matrices, axis=2)
+        cov = []
+        cov_1 = self._compute_covariance_matrices(data_class_1)
+        cov_2 = self._compute_covariance_matrices(data_class_2)
+        cov.append(cov_1)
+        cov.append(cov_2)
+        covs = np.stack(cov)
+        # # calculate inverse of cov2
+        R2_inv = inv(covs[1])
+        product = np.dot(R2_inv,covs[0])
+        eigenvalues, eigenvectors = eigh(product)
+        ix = np.argsort(np.abs(eigenvalues - 0.5))[::-1]
+        eigen_vectors = eigenvectors[:, ix]
 
-        # calculate inverse of cov2
-        R2_inv = inv(cov_2)
-        
-        # calculate * of inverse amd cov 1
-        R = np.dot(R2_inv, cov_1)
-        
-        # calculate eighenvalues and vector
-        eigvals, eigvecs  = eigh(R)
-        idx = np.argsort(eigvals)[::-1]
-        eigvals = eigvals[idx]
-        eigvecs = eigvecs[:, idx]
-        m = self.n_components
-        self.filters_ = np.hstack((eigvecs[:, :m], eigvecs[:, -m:]))
-        print("SHape",self.filters_.shape)
-
-        return self
-    def transform(self, X):
+        self.filters_ = eigen_vectors.T
+        X = (x_array**2).mean(axis=2)
         pick_filters = self.filters_[: self.n_components]
         X = np.asarray([np.dot(pick_filters, epoch) for epoch in X])
-
+        # To standardize features
+        return self
     
-        return X
+    
+    def transform(self, X):
+        pick_filters = self.filters_[: self.n_components]
+        X_class = np.asarray([np.dot(pick_filters, epoch) for epoch in X])
+        X_class = (X_class**2).mean(axis=2)
+        X_class = np.log(X_class)
+        return X_class
 
     def define_class_data(self, X, labels_array):
         """ define class A (t1) class B (t2)
