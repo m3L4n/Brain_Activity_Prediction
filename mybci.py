@@ -20,6 +20,7 @@ def main():
         "--subject",
         type=int,
         action="store",
+        choices=range(1, 110),
         help="subject number",
     )
     parser.add_argument(
@@ -27,6 +28,7 @@ def main():
         type=int,
         nargs="*",
         action="store",
+        choices=range(3, 15),
         help="subject number",
     )
     function_action = None
@@ -40,8 +42,7 @@ def main():
     else:
         match action:
             case "plot":
-                # plot function with subject and tasks
-                print("need to implement plot")
+                plot_data(subject, tasks)
                 return
             case "train":
                 function_action = train_data

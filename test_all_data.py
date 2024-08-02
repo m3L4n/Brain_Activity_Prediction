@@ -6,6 +6,15 @@ from sklearn.model_selection import ShuffleSplit, cross_val_score
 
 
 def test_all_data():
+    """Script that will launch the training for all subject the 6 experiments
+    1- open and close left or right fist,
+    2- imagine opening and closing left or right fist
+    3- open and close both fists or both feet
+    4- imagine opening and closing both fists or both feet
+    5- open - close /imagine open-close left or right fist
+    6- open - close /imagine open-close both fists or both feet
+    and print them  and give the mean of each experiments and the global mean
+    """
     number_subject = 110
     task_dict = {
         1: [3, 7, 11],
@@ -25,8 +34,10 @@ def test_all_data():
         for task_id, runs in task_dict.items():
             data, labels = preprocessing_data(runs, subject)
             clf = set_up_pipeline()
+            #  add my cross_val_score
             cv = ShuffleSplit(5, test_size=0.2, random_state=42)
             scores = cross_val_score(clf, data, labels, cv=cv, n_jobs=None)
+
             clf.fit(data, labels)
 
             task_prediction[subject][task_id].append(np.mean(scores))

@@ -6,6 +6,17 @@ import joblib
 
 
 def train_data(epochs_data, labels):
+    """
+    Train script that receives preprocessing data and fit (train)
+    the Pipeline(csp and classifier(lda)) this  process will save weight of
+    our algorithmn csp and lda and we will save this model and evaluate the
+    accuracy of this model
+
+    Parameters :
+    epoch_data need to be preprocess
+    epochs_data : data ndarray (n_epoch, n_channels, n_times)
+    labels : the tag of each epoch  ndarray (n_epoch)
+    """
     pipeline = set_up_pipeline()
     pipeline.fit(epochs_data, labels)
     script_dir = os.path.dirname(__file__)

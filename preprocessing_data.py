@@ -3,17 +3,20 @@ from mne.io import concatenate_raws, read_raw_edf
 from mne.datasets import eegbci
 from mne import Epochs, pick_types
 from mne import (
-    annotations_from_events,
     events_from_annotations,
 )
 from mne.channels import make_standard_montage
 
 
 def concatenate_edf(subject_number: int, runs_experiment: list):
-    """
-    take the number of the subject and the experiments to test
-    it will load from the directory physionet.org placed a the root of the project all the .edf
-    and concatenate all the .edf  together to get one file of egg
+    """Load all the edf file corresponding at the nbr of subject and the runs
+    experiments. Its make the montage of concatenated files
+    Return the object Raw of all experiments
+
+    Parameters:
+    subject_number : int between 1 to 109
+    runs)experiment : list of int between 3 to 14
+
     """
     try:
         assert isinstance(subject_number, int), "Error subject number has to be int"
@@ -47,14 +50,26 @@ def concatenate_edf(subject_number: int, runs_experiment: list):
 
 
 def filter_edf(raw):
-    """
-    take the raw and apply filter to the frequency kept
+    """Take the Raw object  and apply filter to kept the right information
+    return the raw object filtered
+
+    Parameter:
+    raw Raw object
     """
     raw = raw.filter(8.0, 40.0, fir_design="firwin", skip_by_annotation="edge")
     return raw
 
 
 def define_epochs(raw):
+    """
+    We need to define epoch ( little piece of data containing event that is define in the file )  and get their data and their tag
+    to use them to process a csp on it
+
+    return data ndarray (n_epoch, n_channels ,n_times)  and labels the tag of each epoch ndarray (n_epoch)
+
+    Parameter:
+    Raw object
+    """
     picks = pick_types(
         raw.info, meg=False, eeg=True, stim=False, eog=False, exclude="bads"
     )
@@ -86,7 +101,11 @@ def preprocessing_data(n_task, n_subject):
     1- create dict of all subject with their experiments
     2- filter the frequency
     3-  create epoch
-    return a X for data (n_epoch, n-channels, n_times) and y the tag of each epoch vector of n_epoch
+    return  X for data (n_epoch, n-channels, n_times) and y the tag of each epoch (ndarray of n_epoch)
+
+    Parameters:
+    n_task list of number of task
+    n_subject int number of subject
     """
     raw = concatenate_edf(subject_number=n_subject, runs_experiment=n_task)
     raw = filter_edf(raw)
