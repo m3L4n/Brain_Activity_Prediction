@@ -1,9 +1,11 @@
 # https://en.wikipedia.org/wiki/Common_spatial_pattern
-# https://github.com/mne-tools/mne-python/blob/main/mne/decoding/csp.py#L546
+# https://github.com/mne-tools/mne-python/blob/main/mne/decoding/csp.py
 
 import numpy as np
 from scipy.linalg import eigh
 from sklearn.base import BaseEstimator, TransformerMixin
+
+# to do implement covariance matrice
 
 
 class CSP(TransformerMixin, BaseEstimator):
@@ -16,7 +18,7 @@ class CSP(TransformerMixin, BaseEstimator):
         """
         We have this (n_epoch, n_channels, n_time)
         but we want this
-        [ n_channels, n_epochs * n_times] and compute cov
+        [ n_channels, n_epochs * n_times] for extract feature and compute cov
         """
         idx_channel = 1
         idx_epoch = 0
