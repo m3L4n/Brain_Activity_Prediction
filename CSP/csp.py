@@ -6,6 +6,12 @@ from scipy.linalg import eigh
 from sklearn.base import BaseEstimator, TransformerMixin
 
 # to do implement covariance matrice
+#  to do implement ftt or wavelet transform
+#  add read me to explain the projet
+#  make plot function
+# decompose fit method order component like csp class with ix
+# remake define class to make it more clean
+#  add commentary on each function
 
 
 class CSP(TransformerMixin, BaseEstimator):
