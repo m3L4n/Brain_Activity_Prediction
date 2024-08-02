@@ -14,7 +14,8 @@ class CSP(TransformerMixin, BaseEstimator):
         self.n_components = n_components
         self.filters_ = None
 
-    def _compute_covariance_matrices(self, X):
+    @staticmethod
+    def _compute_covariance_matrices(X):
         """
         We have this (n_epoch, n_channels, n_time)
         but we want this
@@ -29,6 +30,8 @@ class CSP(TransformerMixin, BaseEstimator):
         return np.cov(X_reshape)
 
     def fit(self, X, y):
+        """Separate class to fit the best distinction between R1 et R2
+        and compute weight to transform other data to process a classifier on it"""
 
         self._classes = np.unique(y)
         data_class_1, data_class_2 = self.define_class_data(X, y)
@@ -46,6 +49,7 @@ class CSP(TransformerMixin, BaseEstimator):
         return self
 
     def transform(self, X):
+        """ "Transform our data X with the weight filter and return it"""
         X = np.array(X)
         X_transformed = np.array([np.dot(self.filters_, x) for x in X])
         X = (X_transformed**2).mean(axis=2)
@@ -54,7 +58,7 @@ class CSP(TransformerMixin, BaseEstimator):
         return X
 
     def define_class_data(self, X, labels_array):
-        """define class A (t1) class B (t2)"""
+        """Separate our data in two distinct class (class 1 T! et class 2 T2)"""
         self.class_labels_ = np.unique(labels_array)
         X1 = X[labels_array == self.class_labels_[0]]  # data class 0 (T1)
         X2 = X[labels_array == self.class_labels_[1]]  # data class 1 (T2)

@@ -6,6 +6,7 @@ from mne import (
     annotations_from_events,
     events_from_annotations,
 )
+from mne.channels import make_standard_montage
 
 
 def concatenate_edf(subject_number: int, runs_experiment: list):
@@ -35,12 +36,10 @@ def concatenate_edf(subject_number: int, runs_experiment: list):
 
         raws = [read_raw_edf(f, preload=True) for f in files]
         raw_obj = concatenate_raws(raws)
-        events, _ = events_from_annotations(raw_obj, event_id=dict(T1=1, T2=2))
-        annot_from_events = annotations_from_events(
-            events=events,
-            sfreq=raw_obj.info["sfreq"],
-        )
-        raw_obj.set_annotations(annot_from_events)
+        eegbci.standardize(raw_obj)
+        montage = make_standard_montage("standard_1005")
+        raw_obj.set_montage(montage)
+
         return raw_obj
     except Exception as e:
         print(e)
@@ -60,7 +59,7 @@ def define_epochs(raw):
         raw.info, meg=False, eeg=True, stim=False, eog=False, exclude="bads"
     )
 
-    events, event_id = events_from_annotations(raw)
+    events, event_id = events_from_annotations(raw, dict(T1=1, T2=2))
     tmin, tmax = -0.1, 4.0
     epochs = Epochs(
         raw,
