@@ -14,7 +14,7 @@ def main():
         "--action",
         choices=["plot", "train", "predict"],
         action="store",
-        help="choose the type of cumputing ",
+        help="choose the type of computing ",
     )
     parser.add_argument(
         "--subject",

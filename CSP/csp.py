@@ -7,7 +7,6 @@ from sklearn.base import BaseEstimator, TransformerMixin
 
 
 #  to do implement ftt or wavelet transform
-#  add read me to explain the projet
 
 
 class CSP(TransformerMixin, BaseEstimator):
