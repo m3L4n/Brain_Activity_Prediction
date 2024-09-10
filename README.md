@@ -29,4 +29,4 @@ python ./mybci --action [plot | train | predict] --subject [id subject] -- tasks
 N between 3 and 14
 and id subject 1 to 109
 ```
-Accuracy of 65% for the 6 expirements
+
