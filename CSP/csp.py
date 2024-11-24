@@ -6,9 +6,6 @@ from scipy.linalg import eigh
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
-#  to do implement ftt or wavelet transform
-
-
 class CSP(TransformerMixin, BaseEstimator):
 
     def __init__(self, n_components=4):

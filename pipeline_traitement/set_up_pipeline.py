@@ -7,8 +7,8 @@ from CSP.csp import CSP
 
 
 def set_up_pipeline():
-    """
-    set up the pipeline with our algorithmn CSP and classifier LDA
+    """Set up the pipeline with our algorithm CSP and classifier LDA
+    Return the set up pipeline
     """
     lda = LinearDiscriminantAnalysis()
     csp = CSP(n_components=6)

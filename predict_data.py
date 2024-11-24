@@ -1,6 +1,8 @@
 import os
 import joblib
 import numpy as np
+
+# from pipeline_traitement.cross_validation_score import cross_validation_score
 from playback.playback import playback_reading
 from sklearn.model_selection import cross_val_score
 
@@ -18,5 +20,9 @@ def predict_data(epochs_data, labels):
     data_dir = os.path.join(script_dir, "models/pipeline.pkl")
     pipeline = joblib.load(data_dir)
     playback_reading(epochs_data, pipeline, labels)
-    scores = cross_val_score(pipeline, epochs_data, labels)
-    print(f"Accuracy {np.mean(scores)}")
+    scores = cross_val_score(
+        pipeline,
+        X=epochs_data,
+        y=labels,
+    )
+    print(f"Mean cross_val_score {np.mean(scores)}")

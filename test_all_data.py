@@ -1,5 +1,6 @@
 import numpy as np
 
+from pipeline_traitement.cross_validation_score import cross_validation_score
 from preprocessing_data import preprocessing_data
 from pipeline_traitement.set_up_pipeline import set_up_pipeline
 from sklearn.model_selection import ShuffleSplit, cross_val_score
@@ -34,12 +35,8 @@ def test_all_data():
         for task_id, runs in task_dict.items():
             data, labels = preprocessing_data(runs, subject)
             clf = set_up_pipeline()
-            #  add my cross_val_score
-            cv = ShuffleSplit(5, test_size=0.2, random_state=42)
-            scores = cross_val_score(clf, data, labels, cv=cv, n_jobs=None)
-
+            scores = cross_validation_score(clf, data, labels)
             clf.fit(data, labels)
-
             task_prediction[subject][task_id].append(np.mean(scores))
     task_res_dict = {}
     for i in range(1, 7):

@@ -18,7 +18,9 @@ def plot_data(n_subject, n_tasks):
         raw = filter_edf(raw)
         raw.plot()
         raw.compute_psd().plot()
-        raw.compute_psd().plot(average=True, picks="data", exclude="bads")
+        raw.compute_psd().plot(
+            average=True,
+        )
         plt.show()
 
     except Exception as e:
