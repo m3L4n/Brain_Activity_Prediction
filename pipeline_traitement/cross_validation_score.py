@@ -14,5 +14,5 @@ def cross_validation_score(
     epoch_data : data  ( n_epoch, n_channels, n_times)
     """
     cv = ShuffleSplit(10, test_size=0.2, random_state=42)
-    scores = cross_val_score(pipeline, epoch_data, labels_event, cv=cv, n_jobs=None)
+    scores = cross_val_score(pipeline, epoch_data, labels_event, cv=cv, n_jobs=10)
     return scores
