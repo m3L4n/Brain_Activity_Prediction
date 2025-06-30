@@ -1,32 +1,69 @@
-# Total perspective vortex
-
-> Brain computer interface with machine learning based on
-electoencephalographic data
-
-This repository contains a comprehensive pipeline designed to classify EEG data using a Common Spatial Pattern (CSP)  from scratch in Python and Linear Discriminant Analysis (LDA). The objective is to predict whether a subject is performing or imagining Movement A or Movement B.
-
-## Workflow Overview
-
-The workflow of our data processing pipeline is as follows:
-
-    - EDF File: The EEG data is initially collected and stored in an EDF (European Data Format) file.
-    - Concatenate EDF: Multiple EDF files are concatenated to form a single continuous dataset for analysis.
-    - Montage: A montage is applied to the EEG data to map the electrode positions to standard locations.
-    - Filter Right Frequency: The EEG data is filtered to retain the frequencies relevant for motor imagery tasks.
-    - Define Epoch: The continuous EEG data is segmented into epochs, each representing a specific time window of the EEG signal.
-    - Pipeline Operations:
-        - Fit/Train: The epochs and their corresponding labels are used to fit and train the CSP and LDA classifiers.
-        - Transform/Predict: The trained model is then used to transform new EEG data and predict whether the subject is performing or imagining Movement A or Movement B
+# 🧠 Total Perspective Vortex — Brain-Computer Interface with EEG & ML
 
 
-Usage :
+## 🧠 Introduction
+
+This project is about designing a **brain-computer interface (BCI)** using **EEG data** and **machine learning**. From raw brain signals, we aim to infer the user's motor intention: whether they imagine moving a **hand** or a **foot**, in near **real-time**.
+
+We process open EEG datasets and implement dimensionality reduction techniques (e.g., CSP, PCA) to transform signals into meaningful features before classification.
+
+## 🎯 Goals
+
+-   🧹 Parse and filter raw EEG data.
+    
+-   📉 Implement a dimensionality reduction algorithm (CSP, PCA, ICA…).
+    
+-   🔁 Use scikit-learn’s pipeline for full treatment flow.
+    
+-   ⏱️ Simulate real-time classification of EEG signal chunks (< 2s).
+
+## 🚀 Getting Started
+Clone the repository
 ```
-python -m venv [path] 
-source [path]/bin/activate
+git clone https://github.com/m3L4n/total-perspective-vortex.git
+cd total-perspective-vortex
+```
+
+Install dependencies
+```
 pip install -r requirements.txt
-python ./mybci to train all subject
-python ./mybci --action [plot | train | predict] --subject [id subject] -- tasks [N N N N N]
-N between 3 and 14
-and id subject 1 to 109
+```
+
+## 🧪 Usage
+
+### Train a model
+```
+python mybci.py 4 14 train
+```
+### Predict from a stream (simulated)
+```
+python mybci.py 4 14 predict
+```
+### Global evaluation across multiple subjects
+```
+python mybci.py
+```
+
+## 📈 Evaluation
+
+-   Accuracy is measured across subjects and experiments
+    
+-   Cross-validation is used to evaluate the entire ML pipeline
+    
+-   Real-time prediction must happen within 2 seconds of signal input
+    
+-   Example output:
+```
+epoch 01: [2] [1] False
+epoch 02: [1] [1] True
+...
+Accuracy: 0.7666
+```
+Average classification scores are computed per experiment and overall:
+```
+Experiment 0: accuracy = 0.5991
+Experiment 1: accuracy = 0.5718
+...
+Overall accuracy: 0.8261
 ```
 
