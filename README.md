@@ -11,7 +11,7 @@ We process open EEG datasets and implement dimensionality reduction techniques (
 
 -   🧹 Parse and filter raw EEG data.
     
--   📉 Implement a dimensionality reduction algorithm (CSP, PCA, ICA…).
+-   📉 Implement a dimensionality reduction algorithm (CSP).
     
 -   🔁 Use scikit-learn’s pipeline for full treatment flow.
     
@@ -26,6 +26,7 @@ cd total-perspective-vortex
 
 Install dependencies
 ```
+python -m venv [path of your wanted venv folder]
 pip install -r requirements.txt
 ```
 
