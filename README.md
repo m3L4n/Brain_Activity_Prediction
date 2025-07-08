@@ -1,4 +1,4 @@
-# 🧠 Total Perspective Vortex — Brain-Computer Interface with EEG & ML
+#  Total Perspective Vortex — Brain-Computer Interface with EEG & ML
 
 
 ## 🧠 Introduction
@@ -61,8 +61,8 @@ Accuracy: 0.7666
 ```
 Average classification scores are computed per experiment and overall:
 ```
-Experiment 0: accuracy = 0.5991
-Experiment 1: accuracy = 0.5718
+Experiment 0: accuracy = 0.6991
+Experiment 1: accuracy = 0.8718
 ...
 Overall accuracy: 0.8261
 ```
